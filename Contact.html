@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Contact / Login</title>
+    <link rel="stylesheet" href="Contact.css" />
+    <!-- Sends form data as JSON to a Python backend (e.g. Flask running at http://localhost:5000/submit) -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('contactForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                name: form.name.value.trim(),
+                email: form.email.value.trim()
+            };
+            try {
+                const resp = await fetch('http://localhost:5000/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (resp.ok) {
+                    alert('Form submitted.');
+                    form.reset();
+                } else {
+                    const msg = await resp.text();
+                    alert('Server error: ' + (msg || resp.status));
+                }
+            } catch (err) {
+                alert('Network error: ' + err.message);
+            }
+        });
+    });
+    </script>
+</head>
+<body>
+    <main class="card" role="main">
+        <h1>Sign in</h1>
+        <p class="lead">Enter your name and email to continue.</p>
+
+        <form id="contactForm" action="#" method="post" novalidate>
+            <div>
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" placeholder="Your full name" required autocomplete="name" />
+            </div>
+
+            <div>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="you@example.com" required autocomplete="email" />
+            </div>
+
+            <div class="actions">
+                <button type="submit">Send</button>
+            </div>
+
+            <p class="note" aria-hidden="true">This is a simple front-end form — hook it up to a server or JS to process submissions.</p>
+        </form>
+    </main>
+</body>
+</html>
