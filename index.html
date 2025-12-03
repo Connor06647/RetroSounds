@@ -4,116 +4,306 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RetroSounds - Vinyl Record Shop</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .navbar-brand { color: #f4d03f !important; font-weight: bold; }
-        .navbar { background-color: black; }
-        .nav-link { color: #f4d03f !important; font-weight: bold; }
-        .nav-link:hover { color: #f7dc6f !important; }
-        body { background-color: #faf6f0; }
-        .product-card { height: 100%; }
-        .product-card img { height: 300px; object-fit: cover; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .vinyl-card:hover { transform: translateY(-4px); }
+        .nav-link:hover { color: #d1d5db !important; }
+        .settings-sidebar { transform: translateX(100%); transition: transform 0.3s ease-in-out; }
+        .settings-sidebar.open { transform: translateX(0); }
+        .theme-preview { width: 120px; height: 80px; cursor: pointer; transition: all 0.3s ease; }
+        .theme-preview:hover { transform: scale(1.05); }
+        .theme-preview.selected { ring: 2px; }
     </style>
+    <script>
+        const themes = {
+            'minimalist-dark': {
+                name: 'Minimalist Dark',
+                bodyClass: 'bg-black text-white',
+                navClass: 'bg-black border-b border-gray-800',
+                cardClass: 'bg-gray-900',
+                buttonClass: 'border border-white text-white hover:bg-white hover:text-black'
+            },
+            'vintage-warm': {
+                name: 'Vintage Warm',
+                bodyClass: 'bg-orange-50 text-amber-900',
+                navClass: 'bg-amber-100 border-b border-amber-300',
+                cardClass: 'bg-amber-50 border border-amber-200',
+                buttonClass: 'bg-amber-600 text-white hover:bg-amber-700'
+            },
+            'modern-professional': {
+                name: 'Modern Professional',
+                bodyClass: 'bg-slate-50 text-slate-900',
+                navClass: 'bg-white border-b border-slate-200 shadow-sm',
+                cardClass: 'bg-white border border-slate-200 shadow-sm',
+                buttonClass: 'bg-blue-600 text-white hover:bg-blue-700'
+            },
+            'neon-retro': {
+                name: 'Neon Retro',
+                bodyClass: 'bg-purple-950 text-cyan-100',
+                navClass: 'bg-purple-900 border-b border-cyan-400',
+                cardClass: 'bg-purple-800 border border-cyan-400',
+                buttonClass: 'bg-gradient-to-r from-pink-500 to-cyan-400 text-white hover:from-pink-600 hover:to-cyan-500'
+            }
+        };
+        
+        function toggleSettings() {
+            const sidebar = document.getElementById('settingsSidebar');
+            sidebar.classList.toggle('open');
+        }
+        
+        function openThemeDialog() {
+            document.getElementById('themeDialog').style.display = 'block';
+        }
+        
+        function closeThemeDialog() {
+            document.getElementById('themeDialog').style.display = 'none';
+        }
+        
+        function applyTheme(themeId) {
+            const theme = themes[themeId];
+            document.body.className = theme.bodyClass + ' min-h-screen';
+            document.getElementById('navbar').className = theme.navClass + ' px-8 py-6';
+            
+            // Update product cards
+            const cards = document.querySelectorAll('.bg-gray-900, .bg-amber-50, .bg-white, .bg-purple-800');
+            cards.forEach(card => {
+                if (card.classList.contains('overflow-hidden')) {
+                    card.className = theme.cardClass + ' rounded-lg overflow-hidden p-6 vinyl-card transition-transform duration-300';
+                }
+            });
+            
+            // Update buttons generically
+            const buttons = document.querySelectorAll('button[class*="border"]');
+            buttons.forEach(button => {
+                if (button.textContent.includes('ADD TO COLLECTION') || button.textContent.includes('SHOP NOW')) {
+                    const baseClasses = button.className.split(' ').filter(cls => !cls.includes('bg-') && !cls.includes('text-') && !cls.includes('border-') && !cls.includes('hover:'));
+                    button.className = baseClasses.join(' ') + ' ' + theme.buttonClass;
+                }
+            });
+            
+            localStorage.setItem('selectedTheme', themeId);
+            closeThemeDialog();
+        }
+        
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('selectedTheme') || 'minimalist-dark';
+            applyTheme(savedTheme);
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadSavedTheme);
+    </script>
 </head>
-<body>
+<body class="bg-black text-white min-h-screen">
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="/">RetroSounds</a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/products">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                </ul>
+    <nav id="navbar" class="bg-black border-b border-gray-800 px-8 py-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-light tracking-widest text-white">RETROSOUNDS</h1>
+            <div class="hidden md:flex space-x-12 text-sm font-light tracking-wide items-center">
+                <a href="/" class="text-gray-300 nav-link">HOME</a>
+                <a href="/products" class="text-white hover:text-gray-300 transition-colors nav-link">PRODUCTS</a>
+                <a href="/login" class="text-white hover:text-gray-300 transition-colors nav-link">LOGIN</a>
+                <button onclick="toggleSettings()" class="text-white hover:text-gray-300 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </button>
             </div>
+            <!-- Mobile menu button -->
+            <button class="md:hidden text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <div class="container-fluid bg-dark text-white py-5">
-        <div class="container text-center">
-            <h1 class="display-4" style="color: #f4d03f;">Welcome to RetroSounds</h1>
-            <p class="lead">Discover Classic Vinyl Records & Timeless Music</p>
-            <a href="/products" class="btn btn-warning btn-lg">Shop Now</a>
-        </div>
+    <div class="px-8 py-32 text-center">
+        <h2 class="text-7xl font-light mb-8 tracking-tight">VINYL RECORDS</h2>
+        <p class="text-gray-400 text-xl mb-12 max-w-2xl mx-auto font-light">
+            Curated collection of timeless music for the discerning listener
+        </p>
+        <button class="border border-white px-12 py-4 text-sm tracking-widest font-light hover:bg-white hover:text-black transition-all duration-300 theme-button">
+            EXPLORE COLLECTION
+        </button>
     </div>
 
     <!-- Featured Products -->
-    <div class="container my-5">
-        <h2 class="text-center mb-5">Featured Albums</h2>
-        <div class="row">
+    <div class="max-w-7xl mx-auto px-8 py-20">
+        <h2 class="text-4xl font-light text-center mb-16 tracking-wider">FEATURED ALBUMS</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
             <!-- Product 1: Abbey Road -->
-            <div class="col-md-4 mb-4">
-                <div class="card product-card">
-                    <img src="Beatles_AbbeyRoad.jpg" class="card-img-top" alt="Abbey Road">
-                    <div class="card-body">
-                        <h5 class="card-title">Abbey Road</h5>
-                        <p class="card-text text-muted">The Beatles</p>
-                        <p class="card-text">Classic rock masterpiece from 1969</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <strong class="text-success">£34.99</strong>
-                            <small class="text-muted">Vinyl LP</small>
-                        </div>
-                        <button class="btn btn-warning w-100 mt-2">Add to Cart</button>
-                    </div>
+            <div class="bg-gray-900 p-8 vinyl-card transition-all duration-300 hover:bg-gray-800">
+                <div class="aspect-square mb-6 overflow-hidden">
+                    <img src="Beatles_AbbeyRoad.jpg" class="w-full h-full object-cover" alt="Abbey Road">
                 </div>
+                <h4 class="text-xl font-light mb-2">Abbey Road</h4>
+                <p class="text-gray-400 text-sm mb-1">The Beatles</p>
+                <p class="text-gray-500 text-xs mb-4">Classic rock masterpiece from 1969</p>
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-white text-lg font-light">£34.99</p>
+                    <span class="text-gray-500 text-xs">Vinyl LP</span>
+                </div>
+                <button class="w-full py-3 border border-gray-600 text-sm tracking-wide font-light hover:bg-white hover:text-black transition-all duration-300">
+                    ADD TO COLLECTION
+                </button>
             </div>
 
             <!-- Product 2: Dark Side of the Moon -->
-            <div class="col-md-4 mb-4">
-                <div class="card product-card">
-                    <img src="PinkFloyd_DarkSideMoon.png" class="card-img-top" alt="Dark Side of the Moon">
-                    <div class="card-body">
-                        <h5 class="card-title">Dark Side of the Moon</h5>
-                        <p class="card-text text-muted">Pink Floyd</p>
-                        <p class="card-text">Progressive rock epic from 1973</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <strong class="text-success">£29.99</strong>
-                            <small class="text-muted">Vinyl LP</small>
-                        </div>
-                        <button class="btn btn-warning w-100 mt-2">Add to Cart</button>
-                    </div>
+            <div class="bg-gray-900 p-8 vinyl-card transition-all duration-300 hover:bg-gray-800">
+                <div class="aspect-square mb-6 overflow-hidden">
+                    <img src="PinkFloyd_DarkSideMoon.png" class="w-full h-full object-cover" alt="Dark Side of the Moon">
                 </div>
+                <h4 class="text-xl font-light mb-2">Dark Side of the Moon</h4>
+                <p class="text-gray-400 text-sm mb-1">Pink Floyd</p>
+                <p class="text-gray-500 text-xs mb-4">Progressive rock epic from 1973</p>
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-white text-lg font-light">£29.99</p>
+                    <span class="text-gray-500 text-xs">Vinyl LP</span>
+                </div>
+                <button class="w-full py-3 border border-gray-600 text-sm tracking-wide font-light hover:bg-white hover:text-black transition-all duration-300">
+                    ADD TO COLLECTION
+                </button>
             </div>
 
             <!-- Product 3: Led Zeppelin IV -->
-            <div class="col-md-4 mb-4">
-                <div class="card product-card">
-                    <img src="LedZep_IV.jpg" class="card-img-top" alt="Led Zeppelin IV">
-                    <div class="card-body">
-                        <h5 class="card-title">Led Zeppelin IV</h5>
-                        <p class="card-text text-muted">Led Zeppelin</p>
-                        <p class="card-text">Hard rock legends from 1971</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <strong class="text-success">£32.99</strong>
-                            <small class="text-muted">Vinyl LP</small>
-                        </div>
-                        <button class="btn btn-warning w-100 mt-2">Add to Cart</button>
-                    </div>
+            <div class="bg-gray-900 p-8 vinyl-card transition-all duration-300 hover:bg-gray-800">
+                <div class="aspect-square mb-6 overflow-hidden">
+                    <img src="LedZep_IV.jpg" class="w-full h-full object-cover" alt="Led Zeppelin IV">
                 </div>
+                <h4 class="text-xl font-light mb-2">Led Zeppelin IV</h4>
+                <p class="text-gray-400 text-sm mb-1">Led Zeppelin</p>
+                <p class="text-gray-500 text-xs mb-4">Hard rock legends from 1971</p>
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-white text-lg font-light">£32.99</p>
+                    <span class="text-gray-500 text-xs">Vinyl LP</span>
+                </div>
+                <button class="w-full py-3 border border-gray-600 text-sm tracking-wide font-light hover:bg-white hover:text-black transition-all duration-300">
+                    ADD TO COLLECTION
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-4">
-        <p>&copy; 2025 RetroSounds. All rights reserved.</p>
+    <footer class="bg-black border-t border-gray-800 text-center py-12 mt-20">
+        <p class="text-gray-500 text-sm font-light tracking-wide">&copy; 2025 RETROSOUNDS. ALL RIGHTS RESERVED.</p>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Settings Sidebar -->
+    <div id="settingsSidebar" class="fixed top-0 right-0 h-full w-80 bg-gray-900 shadow-2xl z-50 settings-sidebar">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-light tracking-wide text-white">SETTINGS</h2>
+                <button onclick="toggleSettings()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <button onclick="openThemeDialog()" class="w-full text-left p-4 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-white font-medium">Theme</h3>
+                            <p class="text-gray-400 text-sm">Choose your preferred theme</p>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Dialog -->
+    <div id="themeDialog" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-60 flex items-center justify-center">
+        <div class="bg-gray-900 rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-light tracking-wide text-white">CHOOSE THEME</h2>
+                <button onclick="closeThemeDialog()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Minimalist Dark Theme -->
+                <div onclick="applyTheme('minimalist-dark')" class="theme-preview bg-black border border-gray-600 rounded-lg p-4 cursor-pointer hover:border-white transition-all">
+                    <div class="text-center mb-3">
+                        <h3 class="text-white font-medium mb-1">Minimalist Dark</h3>
+                        <p class="text-gray-400 text-sm">Clean and modern</p>
+                    </div>
+                    <div class="bg-black text-white p-3 rounded border border-gray-700 text-xs">
+                        <div class="border-b border-gray-700 pb-2 mb-2">
+                            <span class="text-gray-300">RETROSOUNDS</span>
+                        </div>
+                        <div class="bg-gray-800 p-2 rounded">
+                            <div class="text-white text-xs">Product Card</div>
+                            <div class="text-gray-400 text-xs">$29.99</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vintage Warm Theme -->
+                <div onclick="applyTheme('vintage-warm')" class="theme-preview bg-orange-50 border border-amber-200 rounded-lg p-4 cursor-pointer hover:border-amber-400 transition-all">
+                    <div class="text-center mb-3">
+                        <h3 class="text-amber-900 font-medium mb-1">Vintage Warm</h3>
+                        <p class="text-amber-700 text-sm">Retro and cozy</p>
+                    </div>
+                    <div class="bg-orange-50 text-amber-900 p-3 rounded border border-amber-200 text-xs">
+                        <div class="border-b border-amber-200 pb-2 mb-2">
+                            <span class="text-amber-800">RETROSOUNDS</span>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-200 p-2 rounded">
+                            <div class="text-amber-900 text-xs">Product Card</div>
+                            <div class="text-amber-700 text-xs">$29.99</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modern Professional Theme -->
+                <div onclick="applyTheme('modern-professional')" class="theme-preview bg-slate-50 border border-slate-200 rounded-lg p-4 cursor-pointer hover:border-slate-400 transition-all">
+                    <div class="text-center mb-3">
+                        <h3 class="text-slate-900 font-medium mb-1">Modern Professional</h3>
+                        <p class="text-slate-600 text-sm">Clean and corporate</p>
+                    </div>
+                    <div class="bg-slate-50 text-slate-900 p-3 rounded border border-slate-200 text-xs">
+                        <div class="border-b border-slate-200 pb-2 mb-2">
+                            <span class="text-slate-800">RETROSOUNDS</span>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-2 rounded shadow-sm">
+                            <div class="text-slate-900 text-xs">Product Card</div>
+                            <div class="text-slate-600 text-xs">$29.99</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Neon Retro Theme -->
+                <div onclick="applyTheme('neon-retro')" class="theme-preview bg-purple-950 border border-cyan-400 rounded-lg p-4 cursor-pointer hover:border-cyan-300 transition-all">
+                    <div class="text-center mb-3">
+                        <h3 class="text-cyan-100 font-medium mb-1">Neon Retro</h3>
+                        <p class="text-cyan-300 text-sm">Bold and vibrant</p>
+                    </div>
+                    <div class="bg-purple-950 text-cyan-100 p-3 rounded border border-cyan-400 text-xs">
+                        <div class="border-b border-cyan-400 pb-2 mb-2">
+                            <span class="text-cyan-100">RETROSOUNDS</span>
+                        </div>
+                        <div class="bg-purple-800 border border-cyan-400 p-2 rounded">
+                            <div class="text-cyan-100 text-xs">Product Card</div>
+                            <div class="text-cyan-300 text-xs">$29.99</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
