@@ -3,8 +3,89 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Contact / Login</title>
-    <link rel="stylesheet" href="Contact.css" />
+    <title>Login - RetroSounds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .form-container:hover { transform: translateY(-2px); }
+        .nav-link:hover { color: #d1d5db !important; }
+        .settings-sidebar { transform: translateX(100%); transition: transform 0.3s ease-in-out; }
+        .settings-sidebar.open { transform: translateX(0); }
+        .theme-preview { cursor: pointer; transition: all 0.3s ease; }
+        .theme-preview:hover { transform: scale(1.05); }
+    </style>
+    <script>
+        const themes = {
+            'minimalist-dark': {
+                name: 'Minimalist Dark',
+                bodyClass: 'bg-black text-white',
+                navClass: 'bg-black border-b border-gray-800',
+                formClass: 'bg-gray-900',
+                inputClass: 'bg-black border-gray-600 text-white',
+                buttonClass: 'border border-white text-white hover:bg-white hover:text-black'
+            },
+            'vintage-warm': {
+                name: 'Vintage Warm',
+                bodyClass: 'bg-orange-50 text-amber-900',
+                navClass: 'bg-amber-100 border-b border-amber-300',
+                formClass: 'bg-amber-50 border border-amber-200',
+                inputClass: 'bg-white border-amber-300 text-amber-900',
+                buttonClass: 'bg-amber-600 text-white hover:bg-amber-700'
+            },
+            'modern-professional': {
+                name: 'Modern Professional',
+                bodyClass: 'bg-slate-50 text-slate-900',
+                navClass: 'bg-white border-b border-slate-200 shadow-sm',
+                formClass: 'bg-white border border-slate-200 shadow-sm',
+                inputClass: 'bg-white border-slate-300 text-slate-900',
+                buttonClass: 'bg-blue-600 text-white hover:bg-blue-700'
+            },
+            'neon-retro': {
+                name: 'Neon Retro',
+                bodyClass: 'bg-purple-950 text-cyan-100',
+                navClass: 'bg-purple-900 border-b border-cyan-400',
+                formClass: 'bg-purple-800 border border-cyan-400',
+                inputClass: 'bg-purple-900 border-cyan-400 text-cyan-100',
+                buttonClass: 'bg-gradient-to-r from-pink-500 to-cyan-400 text-white hover:from-pink-600 hover:to-cyan-500'
+            }
+        };
+        
+        function toggleSettings() { document.getElementById('settingsSidebar').classList.toggle('open'); }
+        function openThemeDialog() { document.getElementById('themeDialog').style.display = 'block'; }
+        function closeThemeDialog() { document.getElementById('themeDialog').style.display = 'none'; }
+        
+        function applyTheme(themeId) {
+            const theme = themes[themeId];
+            document.body.className = theme.bodyClass + ' min-h-screen';
+            document.getElementById('navbar').className = theme.navClass + ' px-8 py-6';
+            
+            const formContainer = document.querySelector('.form-container');
+            if (formContainer) {
+                formContainer.className = theme.formClass + ' rounded-lg p-8 form-container transition-transform duration-300';
+            }
+            
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.className = 'w-full px-4 py-3 focus:outline-none transition-colors ' + theme.inputClass;
+            });
+            
+            const button = document.querySelector('button[type="submit"]');
+            if (button) {
+                button.className = 'w-full py-3 text-sm font-light tracking-wide transition-colors duration-300 ' + theme.buttonClass;
+            }
+            
+            localStorage.setItem('selectedTheme', themeId);
+            closeThemeDialog();
+        }
+        
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('selectedTheme') || 'minimalist-dark';
+            applyTheme(savedTheme);
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadSavedTheme);
+    </script>
     <!-- Sends form data as JSON to a Python backend (e.g. Flask running at http://localhost:5000/submit) -->
     <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -22,7 +103,7 @@
                     body: JSON.stringify(payload)
                 });
                 if (resp.ok) {
-                    alert('Form submitted.');
+                    alert('Form submitted successfully!');
                     form.reset();
                 } else {
                     const msg = await resp.text();
@@ -35,28 +116,135 @@
     });
     </script>
 </head>
-<body>
-    <main class="card" role="main">
-        <h1>Sign in</h1>
-        <p class="lead">Enter your name and email to continue.</p>
-
-        <form id="contactForm" action="#" method="post" novalidate>
-            <div>
-                <label for="name">Name</label>
-                <input id="name" name="name" type="text" placeholder="Your full name" required autocomplete="name" />
+<body class="bg-black text-white min-h-screen">
+    <!-- Navigation -->
+    <nav id="navbar" class="bg-black border-b border-gray-800 px-8 py-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-light tracking-widest text-white">RETROSOUNDS</h1>
+            <div class="hidden md:flex space-x-12 text-sm font-light tracking-wide items-center">
+                <a href="/" class="text-white hover:text-gray-300 transition-colors nav-link">HOME</a>
+                <a href="/products" class="text-white hover:text-gray-300 transition-colors nav-link">PRODUCTS</a>
+                <a href="/login" class="text-gray-300 nav-link">LOGIN</a>
+                <button onclick="toggleSettings()" class="text-white hover:text-gray-300 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </button>
             </div>
+            <!-- Mobile menu button -->
+            <button class="md:hidden text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
 
-            <div>
-                <label for="email">Email</label>
-                <input id="email" name="email" type="email" placeholder="you@example.com" required autocomplete="email" />
+    <!-- Login Form -->
+    <div class="max-w-lg mx-auto px-8 py-20">
+        <div class="bg-gray-900 rounded-lg p-8 form-container transition-transform duration-300">
+            <h1 class="text-4xl font-light text-center mb-4 tracking-wider">SIGN IN</h1>
+            <p class="text-gray-400 text-center mb-8 font-light">Enter your name and email to continue.</p>
+
+            <form id="contactForm" action="#" method="post" novalidate class="space-y-6">
+                <div>
+                    <label for="name" class="block text-sm font-light text-gray-300 mb-2 tracking-wide">NAME</label>
+                    <input id="name" name="name" type="text" placeholder="Your full name" required autocomplete="name"
+                           class="w-full bg-black border border-gray-600 text-white px-4 py-3 placeholder-gray-500 focus:border-white focus:outline-none transition-colors" />
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-light text-gray-300 mb-2 tracking-wide">EMAIL</label>
+                    <input id="email" name="email" type="email" placeholder="you@example.com" required autocomplete="email"
+                           class="w-full bg-black border border-gray-600 text-white px-4 py-3 placeholder-gray-500 focus:border-white focus:outline-none transition-colors" />
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full border border-white text-white py-3 text-sm font-light tracking-wide hover:bg-white hover:text-black transition-colors duration-300">
+                        SEND
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-gray-800 text-center py-12 mt-20">
+        <p class="text-gray-500 text-sm font-light tracking-wide">&copy; 2025 RETROSOUNDS. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <!-- Settings Sidebar -->
+    <div id="settingsSidebar" class="fixed top-0 right-0 h-full w-80 bg-gray-900 shadow-2xl z-50 settings-sidebar">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-light tracking-wide text-white">SETTINGS</h2>
+                <button onclick="toggleSettings()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
-
-            <div class="actions">
-                <button type="submit">Send</button>
+            
+            <div class="space-y-4">
+                <button onclick="openThemeDialog()" class="w-full text-left p-4 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-white font-medium">Theme</h3>
+                            <p class="text-gray-400 text-sm">Choose your preferred theme</p>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                </button>
             </div>
+        </div>
+    </div>
 
-            <p class="note" aria-hidden="true">This is a simple front-end form — hook it up to a server or JS to process submissions.</p>
-        </form>
-    </main>
+    <!-- Theme Dialog -->
+    <div id="themeDialog" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-60 flex items-center justify-center">
+        <div class="bg-gray-900 rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-light tracking-wide text-white">CHOOSE THEME</h2>
+                <button onclick="closeThemeDialog()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div onclick="applyTheme('minimalist-dark')" class="theme-preview bg-black border border-gray-600 rounded-lg p-4 cursor-pointer hover:border-white transition-all">
+                    <div class="text-center mb-3">
+                        <h3 class="text-white font-medium mb-1">Minimalist Dark</h3>
+                        <p class="text-gray-400 text-sm">Clean and modern</p>
+                    </div>
+                </div>
+
+                <div onclick="applyTheme('vintage-warm')" class="theme-preview bg-orange-50 border border-amber-200 rounded-lg p-4 cursor-pointer hover:border-amber-400 transition-all">
+                    <div class="text-center mb-3">
+                        <h3 class="text-amber-900 font-medium mb-1">Vintage Warm</h3>
+                        <p class="text-amber-700 text-sm">Retro and cozy</p>
+                    </div>
+                </div>
+
+                <div onclick="applyTheme('modern-professional')" class="theme-preview bg-slate-50 border border-slate-200 rounded-lg p-4 cursor-pointer hover:border-slate-400 transition-all">
+                    <div class="text-center mb-3">
+                        <h3 class="text-slate-900 font-medium mb-1">Modern Professional</h3>
+                        <p class="text-slate-600 text-sm">Clean and corporate</p>
+                    </div>
+                </div>
+
+                <div onclick="applyTheme('neon-retro')" class="theme-preview bg-purple-950 border border-cyan-400 rounded-lg p-4 cursor-pointer hover:border-cyan-300 transition-all">
+                    <div class="text-center mb-3">
+                        <h3 class="text-cyan-100 font-medium mb-1">Neon Retro</h3>
+                        <p class="text-cyan-300 text-sm">Bold and vibrant</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

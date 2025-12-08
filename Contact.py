@@ -35,6 +35,11 @@ def login():
     # serve the login page (your existing Contact.html)
     return send_from_directory('.', 'Contact.html')
 
+@app.route('/themes')
+def themes():
+    # serve the theme browser
+    return send_from_directory('.', 'theme-browser.html')
+
 @app.route('/Contact.css')
 def serve_css():
     # serve the Contact.css file
