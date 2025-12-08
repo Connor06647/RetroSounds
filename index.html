@@ -12,8 +12,8 @@
         .nav-link:hover { color: #d1d5db !important; }
         .settings-sidebar { transform: translateX(100%); transition: transform 0.3s ease-in-out; }
         .settings-sidebar.open { transform: translateX(0); }
-        .theme-preview { width: 120px; height: 80px; cursor: pointer; transition: all 0.3s ease; }
-        .theme-preview:hover { transform: scale(1.05); }
+        .theme-preview { cursor: pointer; transition: all 0.3s ease; }
+        .theme-preview:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .theme-preview.selected { ring: 2px; }
     </style>
     <script>
@@ -22,28 +22,68 @@
                 name: 'Minimalist Dark',
                 bodyClass: 'bg-black text-white',
                 navClass: 'bg-black border-b border-gray-800',
+                navLinkClass: 'text-gray-300 hover:text-white',
+                navTitleClass: 'text-white',
                 cardClass: 'bg-gray-900',
+                cardTextClass: 'text-white',
+                cardSubtextClass: 'text-gray-400',
+                cardMetaClass: 'text-gray-500',
+                sidebarClass: 'bg-gray-900',
+                sidebarTitleClass: 'text-white',
+                sidebarButtonClass: 'bg-gray-800 hover:bg-gray-700',
+                sidebarTextClass: 'text-white',
+                sidebarSubtextClass: 'text-gray-400',
                 buttonClass: 'border border-white text-white hover:bg-white hover:text-black'
             },
             'vintage-warm': {
                 name: 'Vintage Warm',
                 bodyClass: 'bg-orange-50 text-amber-900',
                 navClass: 'bg-amber-100 border-b border-amber-300',
+                navLinkClass: 'text-amber-800 hover:text-amber-950',
+                navTitleClass: 'text-amber-900',
                 cardClass: 'bg-amber-50 border border-amber-200',
+                cardTextClass: 'text-amber-900',
+                cardSubtextClass: 'text-amber-700',
+                cardMetaClass: 'text-amber-600',
+                sidebarClass: 'bg-amber-100',
+                sidebarTitleClass: 'text-amber-900',
+                sidebarButtonClass: 'bg-amber-50 hover:bg-amber-200 border border-amber-300',
+                sidebarTextClass: 'text-amber-900',
+                sidebarSubtextClass: 'text-amber-700',
                 buttonClass: 'bg-amber-600 text-white hover:bg-amber-700'
             },
             'modern-professional': {
                 name: 'Modern Professional',
                 bodyClass: 'bg-slate-50 text-slate-900',
                 navClass: 'bg-white border-b border-slate-200 shadow-sm',
+                navLinkClass: 'text-slate-700 hover:text-slate-900',
+                navTitleClass: 'text-slate-900',
                 cardClass: 'bg-white border border-slate-200 shadow-sm',
+                cardTextClass: 'text-slate-900',
+                cardSubtextClass: 'text-slate-600',
+                cardMetaClass: 'text-slate-500',
+                sidebarClass: 'bg-white border-l border-slate-200',
+                sidebarTitleClass: 'text-slate-900',
+                sidebarButtonClass: 'bg-slate-50 hover:bg-slate-100 border border-slate-200',
+                sidebarTextClass: 'text-slate-900',
+                sidebarSubtextClass: 'text-slate-600',
                 buttonClass: 'bg-blue-600 text-white hover:bg-blue-700'
             },
             'neon-retro': {
                 name: 'Neon Retro',
                 bodyClass: 'bg-purple-950 text-cyan-100',
                 navClass: 'bg-purple-900 border-b border-cyan-400',
+                navLinkClass: 'text-cyan-300 hover:text-cyan-100',
+                navTitleClass: 'text-cyan-100',
                 cardClass: 'bg-purple-800 border border-cyan-400',
+                cardTextClass: 'text-cyan-100',
+                cardSubtextClass: 'text-cyan-300',
+                cardMetaClass: 'text-cyan-400',
+                sidebarClass: 'bg-purple-900 border-l border-cyan-400',
+                sidebarTitleClass: 'text-cyan-100',
+                sidebarButtonClass: 'bg-purple-800 hover:bg-purple-700 border border-cyan-400',
+                sidebarTextClass: 'text-cyan-100',
+                sidebarSubtextClass: 'text-cyan-300',
                 buttonClass: 'bg-gradient-to-r from-pink-500 to-cyan-400 text-white hover:from-pink-600 hover:to-cyan-500'
             }
         };
@@ -66,22 +106,91 @@
             document.body.className = theme.bodyClass + ' min-h-screen';
             document.getElementById('navbar').className = theme.navClass + ' px-8 py-6';
             
+            // Update nav title
+            const navTitle = document.querySelector('nav h1');
+            if (navTitle) {
+                navTitle.className = 'text-3xl font-light tracking-widest ' + theme.navTitleClass;
+            }
+            
+            // Update nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.className = 'nav-link transition-colors ' + theme.navLinkClass;
+            });
+            
+            // Update settings button to match nav links
+            const settingsBtn = document.querySelector('nav button[onclick="toggleSettings()"]');
+            if (settingsBtn) {
+                settingsBtn.className = 'transition-colors ' + theme.navLinkClass;
+            }
+            
             // Update product cards
-            const cards = document.querySelectorAll('.bg-gray-900, .bg-amber-50, .bg-white, .bg-purple-800');
+            const cards = document.querySelectorAll('.vinyl-card');
             cards.forEach(card => {
-                if (card.classList.contains('overflow-hidden')) {
-                    card.className = theme.cardClass + ' rounded-lg overflow-hidden p-6 vinyl-card transition-transform duration-300';
-                }
+                card.className = theme.cardClass + ' p-8 vinyl-card transition-all duration-300';
+                
+                // Update card title
+                const title = card.querySelector('h4');
+                if (title) title.className = 'text-xl font-light mb-2 ' + theme.cardTextClass;
+                
+                // Update card subtitle (artist)
+                const subtitle = card.querySelectorAll('p')[0];
+                if (subtitle) subtitle.className = 'text-sm mb-1 ' + theme.cardSubtextClass;
+                
+                // Update card description
+                const desc = card.querySelectorAll('p')[1];
+                if (desc) desc.className = 'text-xs mb-4 ' + theme.cardMetaClass;
+                
+                // Update price
+                const price = card.querySelector('.flex p');
+                if (price) price.className = 'text-lg font-light ' + theme.cardTextClass;
+                
+                // Update meta text (Vinyl LP)
+                const meta = card.querySelector('.flex span');
+                if (meta) meta.className = 'text-xs ' + theme.cardMetaClass;
             });
             
             // Update buttons generically
             const buttons = document.querySelectorAll('button[class*="border"]');
             buttons.forEach(button => {
-                if (button.textContent.includes('ADD TO COLLECTION') || button.textContent.includes('SHOP NOW')) {
+                if (button.textContent.includes('ADD TO COLLECTION') || button.textContent.includes('EXPLORE COLLECTION')) {
                     const baseClasses = button.className.split(' ').filter(cls => !cls.includes('bg-') && !cls.includes('text-') && !cls.includes('border-') && !cls.includes('hover:'));
                     button.className = baseClasses.join(' ') + ' ' + theme.buttonClass;
                 }
             });
+            
+            // Update settings sidebar
+            const sidebar = document.getElementById('settingsSidebar');
+            if (sidebar) {
+                sidebar.className = 'fixed top-0 right-0 h-full w-80 shadow-2xl z-50 settings-sidebar ' + theme.sidebarClass;
+            }
+            
+            // Update sidebar title
+            const sidebarTitle = document.querySelector('#settingsSidebar h2');
+            if (sidebarTitle) {
+                sidebarTitle.className = 'text-xl font-light tracking-wide ' + theme.sidebarTitleClass;
+            }
+            
+            // Update sidebar close button
+            const sidebarCloseBtn = document.querySelector('#settingsSidebar button[onclick="toggleSettings()"]');
+            if (sidebarCloseBtn) {
+                sidebarCloseBtn.className = 'hover:opacity-70 transition-opacity ' + theme.sidebarSubtextClass;
+            }
+            
+            // Update theme button in sidebar
+            const themeButton = document.querySelector('button[onclick="openThemeDialog()"]');
+            if (themeButton) {
+                themeButton.className = 'w-full text-left p-4 rounded-lg transition-colors ' + theme.sidebarButtonClass;
+                
+                const themeBtnTitle = themeButton.querySelector('h3');
+                if (themeBtnTitle) themeBtnTitle.className = 'font-medium ' + theme.sidebarTextClass;
+                
+                const themeBtnSubtext = themeButton.querySelector('p');
+                if (themeBtnSubtext) themeBtnSubtext.className = 'text-sm ' + theme.sidebarSubtextClass;
+                
+                const themeBtnIcon = themeButton.querySelector('svg');
+                if (themeBtnIcon) themeBtnIcon.className = 'w-5 h-5 ' + theme.sidebarSubtextClass;
+            }
             
             localStorage.setItem('selectedTheme', themeId);
             closeThemeDialog();
@@ -126,7 +235,7 @@
         <p class="text-gray-400 text-xl mb-12 max-w-2xl mx-auto font-light">
             Curated collection of timeless music for the discerning listener
         </p>
-        <button class="border border-white px-12 py-4 text-sm tracking-widest font-light hover:bg-white hover:text-black transition-all duration-300 theme-button">
+        <button class="px-12 py-4 text-sm tracking-widest font-light transition-all duration-300 theme-button border border-white text-white hover:bg-white hover:text-black">
             EXPLORE COLLECTION
         </button>
     </div>
@@ -222,83 +331,75 @@
     </div>
 
     <!-- Theme Dialog -->
-    <div id="themeDialog" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-60 flex items-center justify-center">
-        <div class="bg-gray-900 rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div id="themeDialog" style="display: none; z-index: 9999;" class="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-70 flex items-center justify-center">
+        <div class="bg-gray-900 rounded-lg p-6 w-auto">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-light tracking-wide text-white">CHOOSE THEME</h2>
-                <button onclick="closeThemeDialog()" class="text-gray-400 hover:text-white">
+                <button onclick="closeThemeDialog()" class="text-gray-400 hover:text-white ml-8">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Minimalist Dark Theme -->
-                <div onclick="applyTheme('minimalist-dark')" class="theme-preview bg-black border border-gray-600 rounded-lg p-4 cursor-pointer hover:border-white transition-all">
+                <div onclick="applyTheme('minimalist-dark')" class="theme-preview bg-black border-2 border-gray-600 rounded-lg p-4 cursor-pointer hover:border-white transition-all">
                     <div class="text-center mb-3">
-                        <h3 class="text-white font-medium mb-1">Minimalist Dark</h3>
-                        <p class="text-gray-400 text-sm">Clean and modern</p>
+                        <h3 class="text-white font-semibold mb-1">Minimalist Dark</h3>
+                        <p class="text-gray-400 text-xs">Clean and modern</p>
                     </div>
-                    <div class="bg-black text-white p-3 rounded border border-gray-700 text-xs">
-                        <div class="border-b border-gray-700 pb-2 mb-2">
-                            <span class="text-gray-300">RETROSOUNDS</span>
+                    <div class="space-y-2">
+                        <div class="bg-gray-900 p-2 rounded">
+                            <div class="text-white text-xs font-medium">Abbey Road</div>
+                            <div class="text-gray-400 text-xs">The Beatles • $29.99</div>
                         </div>
-                        <div class="bg-gray-800 p-2 rounded">
-                            <div class="text-white text-xs">Product Card</div>
-                            <div class="text-gray-400 text-xs">$29.99</div>
-                        </div>
+                        <button class="w-full border border-white text-white text-xs py-1 rounded hover:bg-white hover:text-black transition-colors">View</button>
                     </div>
                 </div>
 
                 <!-- Vintage Warm Theme -->
-                <div onclick="applyTheme('vintage-warm')" class="theme-preview bg-orange-50 border border-amber-200 rounded-lg p-4 cursor-pointer hover:border-amber-400 transition-all">
+                <div onclick="applyTheme('vintage-warm')" class="theme-preview bg-orange-50 border-2 border-amber-300 rounded-lg p-4 cursor-pointer hover:border-amber-500 transition-all">
                     <div class="text-center mb-3">
-                        <h3 class="text-amber-900 font-medium mb-1">Vintage Warm</h3>
-                        <p class="text-amber-700 text-sm">Retro and cozy</p>
+                        <h3 class="text-amber-900 font-semibold mb-1">Vintage Warm</h3>
+                        <p class="text-amber-700 text-xs">Retro and cozy</p>
                     </div>
-                    <div class="bg-orange-50 text-amber-900 p-3 rounded border border-amber-200 text-xs">
-                        <div class="border-b border-amber-200 pb-2 mb-2">
-                            <span class="text-amber-800">RETROSOUNDS</span>
-                        </div>
+                    <div class="space-y-2">
                         <div class="bg-amber-50 border border-amber-200 p-2 rounded">
-                            <div class="text-amber-900 text-xs">Product Card</div>
-                            <div class="text-amber-700 text-xs">$29.99</div>
+                            <div class="text-amber-900 text-xs font-medium">Abbey Road</div>
+                            <div class="text-amber-700 text-xs">The Beatles • $29.99</div>
                         </div>
+                        <button class="w-full bg-amber-600 text-white text-xs py-1 rounded hover:bg-amber-700 transition-colors">View</button>
                     </div>
                 </div>
 
                 <!-- Modern Professional Theme -->
-                <div onclick="applyTheme('modern-professional')" class="theme-preview bg-slate-50 border border-slate-200 rounded-lg p-4 cursor-pointer hover:border-slate-400 transition-all">
+                <div onclick="applyTheme('modern-professional')" class="theme-preview bg-slate-50 border-2 border-slate-300 rounded-lg p-4 cursor-pointer hover:border-slate-500 transition-all">
                     <div class="text-center mb-3">
-                        <h3 class="text-slate-900 font-medium mb-1">Modern Professional</h3>
-                        <p class="text-slate-600 text-sm">Clean and corporate</p>
+                        <h3 class="text-slate-900 font-semibold mb-1">Modern Professional</h3>
+                        <p class="text-slate-600 text-xs">Clean and corporate</p>
                     </div>
-                    <div class="bg-slate-50 text-slate-900 p-3 rounded border border-slate-200 text-xs">
-                        <div class="border-b border-slate-200 pb-2 mb-2">
-                            <span class="text-slate-800">RETROSOUNDS</span>
-                        </div>
+                    <div class="space-y-2">
                         <div class="bg-white border border-slate-200 p-2 rounded shadow-sm">
-                            <div class="text-slate-900 text-xs">Product Card</div>
-                            <div class="text-slate-600 text-xs">$29.99</div>
+                            <div class="text-slate-900 text-xs font-medium">Abbey Road</div>
+                            <div class="text-slate-600 text-xs">The Beatles • $29.99</div>
                         </div>
+                        <button class="w-full bg-blue-600 text-white text-xs py-1 rounded hover:bg-blue-700 transition-colors">View</button>
                     </div>
                 </div>
 
                 <!-- Neon Retro Theme -->
-                <div onclick="applyTheme('neon-retro')" class="theme-preview bg-purple-950 border border-cyan-400 rounded-lg p-4 cursor-pointer hover:border-cyan-300 transition-all">
+                <div onclick="applyTheme('neon-retro')" class="theme-preview bg-purple-950 border-2 border-cyan-400 rounded-lg p-4 cursor-pointer hover:border-cyan-300 transition-all">
                     <div class="text-center mb-3">
-                        <h3 class="text-cyan-100 font-medium mb-1">Neon Retro</h3>
-                        <p class="text-cyan-300 text-sm">Bold and vibrant</p>
+                        <h3 class="text-cyan-100 font-semibold mb-1">Neon Retro</h3>
+                        <p class="text-cyan-300 text-xs">Bold and vibrant</p>
                     </div>
-                    <div class="bg-purple-950 text-cyan-100 p-3 rounded border border-cyan-400 text-xs">
-                        <div class="border-b border-cyan-400 pb-2 mb-2">
-                            <span class="text-cyan-100">RETROSOUNDS</span>
-                        </div>
+                    <div class="space-y-2">
                         <div class="bg-purple-800 border border-cyan-400 p-2 rounded">
-                            <div class="text-cyan-100 text-xs">Product Card</div>
-                            <div class="text-cyan-300 text-xs">$29.99</div>
+                            <div class="text-cyan-100 text-xs font-medium">Abbey Road</div>
+                            <div class="text-cyan-300 text-xs">The Beatles • $29.99</div>
                         </div>
+                        <button class="w-full bg-gradient-to-r from-pink-500 to-cyan-400 text-white text-xs py-1 rounded hover:from-pink-600 hover:to-cyan-500 transition-colors">View</button>
                     </div>
                 </div>
             </div>
