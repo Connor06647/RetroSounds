@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetroSounds Theme Browser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .theme-preview {
+            height: 400px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .theme-preview:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .theme-content {
+            transform: scale(0.6);
+            transform-origin: top left;
+            width: 166.67%;
+            height: 166.67%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <h1 class="text-3xl font-bold text-gray-900">RetroSounds Theme Browser</h1>
+            <p class="text-gray-600 mt-2">Choose your preferred design style for the vinyl record shop</p>
+        </div>
+    </div>
+
+    <!-- Theme Grid -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Theme 1: Minimalist Dark -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold">Minimalist Dark</h3>
+                    <button onclick="applyTheme('dark')" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Apply Theme
+                    </button>
+                </div>
+                <div class="theme-preview">
+                    <div class="theme-content">
+                        <div class="min-h-screen bg-black text-white">
+                            <!-- Nav -->
+                            <nav class="bg-black border-b border-gray-800 px-8 py-4">
+                                <div class="flex justify-between items-center">
+                                    <h1 class="text-2xl font-light tracking-widest">RETROSOUNDS</h1>
+                                    <div class="space-x-8 text-sm">
+                                        <a href="#" class="hover:text-gray-300">HOME</a>
+                                        <a href="#" class="hover:text-gray-300">PRODUCTS</a>
+                                        <a href="#" class="hover:text-gray-300">LOGIN</a>
+                                    </div>
+                                </div>
+                            </nav>
+                            <!-- Hero -->
+                            <div class="px-8 py-20 text-center">
+                                <h2 class="text-5xl font-light mb-6">VINYL RECORDS</h2>
+                                <p class="text-gray-400 text-lg mb-8">Curated collection of timeless music</p>
+                                <button class="border border-white px-8 py-3 hover:bg-white hover:text-black transition-colors">
+                                    EXPLORE COLLECTION
+                                </button>
+                            </div>
+                            <!-- Products -->
+                            <div class="px-8 grid grid-cols-3 gap-6">
+                                <div class="bg-gray-900 p-6">
+                                    <div class="w-full h-32 bg-gray-800 mb-4"></div>
+                                    <h4 class="font-light">Abbey Road</h4>
+                                    <p class="text-sm text-gray-400">The Beatles</p>
+                                    <p class="text-white mt-2">£34.99</p>
+                                </div>
+                                <div class="bg-gray-900 p-6">
+                                    <div class="w-full h-32 bg-gray-800 mb-4"></div>
+                                    <h4 class="font-light">Dark Side</h4>
+                                    <p class="text-sm text-gray-400">Pink Floyd</p>
+                                    <p class="text-white mt-2">£29.99</p>
+                                </div>
+                                <div class="bg-gray-900 p-6">
+                                    <div class="w-full h-32 bg-gray-800 mb-4"></div>
+                                    <h4 class="font-light">Led Zeppelin IV</h4>
+                                    <p class="text-sm text-gray-400">Led Zeppelin</p>
+                                    <p class="text-white mt-2">£32.99</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-3">Clean, minimalist design with dark theme and premium typography</p>
+            </div>
+
+            <!-- Theme 2: Vintage Warm -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold">Vintage Warm</h3>
+                    <button onclick="applyTheme('vintage')" class="bg-amber-500 text-white px-4 py-2 rounded hover:bg-amber-600">
+                        Apply Theme
+                    </button>
+                </div>
+                <div class="theme-preview">
+                    <div class="theme-content">
+                        <div class="min-h-screen bg-amber-50">
+                            <!-- Nav -->
+                            <nav class="bg-amber-900 text-amber-100 px-8 py-4">
+                                <div class="flex justify-between items-center">
+                                    <h1 class="text-2xl font-bold text-amber-200">RetroSounds</h1>
+                                    <div class="space-x-6">
+                                        <a href="#" class="hover:text-amber-200">Home</a>
+                                        <a href="#" class="hover:text-amber-200">Products</a>
+                                        <a href="#" class="hover:text-amber-200">Login</a>
+                                    </div>
+                                </div>
+                            </nav>
+                            <!-- Hero -->
+                            <div class="bg-gradient-to-r from-amber-100 to-orange-100 px-8 py-16 text-center">
+                                <h2 class="text-4xl font-bold text-amber-900 mb-4">Discover Classic Vinyl</h2>
+                                <p class="text-amber-700 text-lg mb-6">Handpicked records from the golden age of music</p>
+                                <button class="bg-amber-600 text-white px-8 py-3 rounded-full hover:bg-amber-700 shadow-lg">
+                                    Shop Collection
+                                </button>
+                            </div>
+                            <!-- Products -->
+                            <div class="px-8 py-8 grid grid-cols-3 gap-4">
+                                <div class="bg-white rounded-lg shadow-md p-4">
+                                    <div class="w-full h-24 bg-amber-200 rounded mb-3"></div>
+                                    <h4 class="font-semibold text-amber-900">Abbey Road</h4>
+                                    <p class="text-sm text-amber-600">The Beatles</p>
+                                    <p class="text-amber-800 font-bold mt-2">£34.99</p>
+                                </div>
+                                <div class="bg-white rounded-lg shadow-md p-4">
+                                    <div class="w-full h-24 bg-amber-200 rounded mb-3"></div>
+                                    <h4 class="font-semibold text-amber-900">Dark Side</h4>
+                                    <p class="text-sm text-amber-600">Pink Floyd</p>
+                                    <p class="text-amber-800 font-bold mt-2">£29.99</p>
+                                </div>
+                                <div class="bg-white rounded-lg shadow-md p-4">
+                                    <div class="w-full h-24 bg-amber-200 rounded mb-3"></div>
+                                    <h4 class="font-semibold text-amber-900">Led Zeppelin IV</h4>
+                                    <p class="text-sm text-amber-600">Led Zeppelin</p>
+                                    <p class="text-amber-800 font-bold mt-2">£32.99</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-3">Warm, vintage-inspired design with golden tones and rounded elements</p>
+            </div>
+
+            <!-- Theme 3: Modern Professional -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold">Modern Professional</h3>
+                    <button onclick="applyTheme('modern')" class="bg-slate-500 text-white px-4 py-2 rounded hover:bg-slate-600">
+                        Apply Theme
+                    </button>
+                </div>
+                <div class="theme-preview">
+                    <div class="theme-content">
+                        <div class="min-h-screen bg-slate-50">
+                            <!-- Nav -->
+                            <nav class="bg-white shadow-sm border-b px-8 py-4">
+                                <div class="flex justify-between items-center">
+                                    <h1 class="text-2xl font-bold text-slate-800">RetroSounds</h1>
+                                    <div class="space-x-8 text-slate-600">
+                                        <a href="#" class="hover:text-slate-800 font-medium">Home</a>
+                                        <a href="#" class="hover:text-slate-800 font-medium">Products</a>
+                                        <a href="#" class="hover:text-slate-800 font-medium">Login</a>
+                                    </div>
+                                </div>
+                            </nav>
+                            <!-- Hero -->
+                            <div class="px-8 py-20 text-center bg-gradient-to-b from-slate-50 to-slate-100">
+                                <h2 class="text-5xl font-bold text-slate-800 mb-6">Premium Vinyl Records</h2>
+                                <p class="text-slate-600 text-xl mb-8">Professional audio experience delivered</p>
+                                <button class="bg-slate-800 text-white px-10 py-4 rounded-lg hover:bg-slate-900 font-semibold">
+                                    Explore Collection
+                                </button>
+                            </div>
+                            <!-- Products -->
+                            <div class="px-8 py-12 grid grid-cols-3 gap-6">
+                                <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+                                    <div class="w-full h-32 bg-slate-200 rounded-lg mb-4"></div>
+                                    <h4 class="font-bold text-slate-800">Abbey Road</h4>
+                                    <p class="text-slate-500">The Beatles</p>
+                                    <div class="flex justify-between items-center mt-3">
+                                        <p class="text-slate-800 font-bold text-lg">£34.99</p>
+                                        <button class="bg-slate-100 px-3 py-1 rounded text-sm hover:bg-slate-200">Add</button>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-xl shadow-md p-6">
+                                    <div class="w-full h-32 bg-slate-200 rounded-lg mb-4"></div>
+                                    <h4 class="font-bold text-slate-800">Dark Side</h4>
+                                    <p class="text-slate-500">Pink Floyd</p>
+                                    <div class="flex justify-between items-center mt-3">
+                                        <p class="text-slate-800 font-bold text-lg">£29.99</p>
+                                        <button class="bg-slate-100 px-3 py-1 rounded text-sm hover:bg-slate-200">Add</button>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-xl shadow-md p-6">
+                                    <div class="w-full h-32 bg-slate-200 rounded-lg mb-4"></div>
+                                    <h4 class="font-bold text-slate-800">Led Zeppelin IV</h4>
+                                    <p class="text-slate-500">Led Zeppelin</p>
+                                    <div class="flex justify-between items-center mt-3">
+                                        <p class="text-slate-800 font-bold text-lg">£32.99</p>
+                                        <button class="bg-slate-100 px-3 py-1 rounded text-sm hover:bg-slate-200">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-3">Clean, corporate design with subtle shadows and professional typography</p>
+            </div>
+
+            <!-- Theme 4: Neon Retro -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold">Neon Retro</h3>
+                    <button onclick="applyTheme('neon')" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                        Apply Theme
+                    </button>
+                </div>
+                <div class="theme-preview">
+                    <div class="theme-content">
+                        <div class="min-h-screen bg-gray-900 text-white">
+                            <!-- Nav -->
+                            <nav class="bg-gray-800 border-b border-purple-500/30 px-8 py-4">
+                                <div class="flex justify-between items-center">
+                                    <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
+                                        RETROSOUNDS
+                                    </h1>
+                                    <div class="space-x-6 text-cyan-400">
+                                        <a href="#" class="hover:text-pink-400 transition-colors">HOME</a>
+                                        <a href="#" class="hover:text-pink-400 transition-colors">PRODUCTS</a>
+                                        <a href="#" class="hover:text-pink-400 transition-colors">LOGIN</a>
+                                    </div>
+                                </div>
+                            </nav>
+                            <!-- Hero -->
+                            <div class="px-8 py-16 text-center bg-gradient-to-r from-purple-900/20 to-pink-900/20">
+                                <h2 class="text-4xl font-bold mb-6">
+                                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-400">
+                                        CLASSIC VINYL RECORDS
+                                    </span>
+                                </h2>
+                                <p class="text-cyan-300 text-lg mb-8">Experience music the way it was meant to be heard</p>
+                                <button class="bg-gradient-to-r from-pink-500 to-purple-600 px-8 py-3 rounded-lg hover:from-pink-600 hover:to-purple-700 font-bold shadow-lg shadow-purple-500/25">
+                                    START EXPLORING
+                                </button>
+                            </div>
+                            <!-- Products -->
+                            <div class="px-8 py-8 grid grid-cols-3 gap-4">
+                                <div class="bg-gray-800 border border-purple-500/30 rounded-lg p-4 hover:border-pink-500/50 transition-colors">
+                                    <div class="w-full h-24 bg-gradient-to-br from-purple-400 to-pink-400 rounded mb-3"></div>
+                                    <h4 class="font-bold text-cyan-300">Abbey Road</h4>
+                                    <p class="text-sm text-gray-400">The Beatles</p>
+                                    <p class="text-pink-400 font-bold mt-2">£34.99</p>
+                                </div>
+                                <div class="bg-gray-800 border border-purple-500/30 rounded-lg p-4">
+                                    <div class="w-full h-24 bg-gradient-to-br from-cyan-400 to-purple-400 rounded mb-3"></div>
+                                    <h4 class="font-bold text-cyan-300">Dark Side</h4>
+                                    <p class="text-sm text-gray-400">Pink Floyd</p>
+                                    <p class="text-pink-400 font-bold mt-2">£29.99</p>
+                                </div>
+                                <div class="bg-gray-800 border border-purple-500/30 rounded-lg p-4">
+                                    <div class="w-full h-24 bg-gradient-to-br from-pink-400 to-purple-400 rounded mb-3"></div>
+                                    <h4 class="font-bold text-cyan-300">Led Zeppelin IV</h4>
+                                    <p class="text-sm text-gray-400">Led Zeppelin</p>
+                                    <p class="text-pink-400 font-bold mt-2">£32.99</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-3">Bold 80s-inspired design with neon colors and gradient effects</p>
+            </div>
+
+        </div>
+
+        <!-- Current Implementation -->
+        <div class="mt-12 bg-blue-50 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-blue-900 mb-4">Current Implementation</h2>
+            <p class="text-blue-700 mb-4">Your existing RetroSounds design uses Bootstrap with a gold/black color scheme. Would you like to enhance it with Tailwind CSS while keeping the same aesthetic, or switch to one of the themes above?</p>
+            <div class="flex space-x-4">
+                <button onclick="enhanceCurrent()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                    Enhance Current Design
+                </button>
+                <button onclick="showComparison()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700">
+                    Show Comparison
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function applyTheme(theme) {
+            alert(`Ready to apply ${theme} theme! I'll help you implement this design for your RetroSounds project.`);
+            // In actual implementation, this would trigger theme generation
+        }
+
+        function enhanceCurrent() {
+            alert('I\'ll enhance your current gold/black Bootstrap design with Tailwind CSS improvements!');
+        }
+
+        function showComparison() {
+            alert('I can show you a side-by-side comparison of any themes you\'re interested in!');
+        }
+    </script>
+
+</body>
+</html>
