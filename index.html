@@ -33,6 +33,8 @@
                 sidebarButtonClass: 'bg-gray-800 hover:bg-gray-700',
                 sidebarTextClass: 'text-white',
                 sidebarSubtextClass: 'text-gray-400',
+                footerClass: 'bg-black border-t border-gray-800',
+                footerTextClass: 'text-gray-500',
                 buttonClass: 'border border-white text-white hover:bg-white hover:text-black'
             },
             'vintage-warm': {
@@ -50,6 +52,8 @@
                 sidebarButtonClass: 'bg-amber-50 hover:bg-amber-200 border border-amber-300',
                 sidebarTextClass: 'text-amber-900',
                 sidebarSubtextClass: 'text-amber-700',
+                footerClass: 'bg-amber-100 border-t border-amber-300',
+                footerTextClass: 'text-amber-700',
                 buttonClass: 'bg-amber-600 text-white hover:bg-amber-700'
             },
             'modern-professional': {
@@ -67,6 +71,8 @@
                 sidebarButtonClass: 'bg-slate-50 hover:bg-slate-100 border border-slate-200',
                 sidebarTextClass: 'text-slate-900',
                 sidebarSubtextClass: 'text-slate-600',
+                footerClass: 'bg-slate-100 border-t border-slate-200',
+                footerTextClass: 'text-slate-600',
                 buttonClass: 'bg-blue-600 text-white hover:bg-blue-700'
             },
             'neon-retro': {
@@ -84,6 +90,8 @@
                 sidebarButtonClass: 'bg-purple-800 hover:bg-purple-700 border border-cyan-400',
                 sidebarTextClass: 'text-cyan-100',
                 sidebarSubtextClass: 'text-cyan-300',
+                footerClass: 'bg-purple-900 border-t border-cyan-400',
+                footerTextClass: 'text-cyan-300',
                 buttonClass: 'bg-gradient-to-r from-pink-500 to-cyan-400 text-white hover:from-pink-600 hover:to-cyan-500'
             }
         };
@@ -190,6 +198,14 @@
                 
                 const themeBtnIcon = themeButton.querySelector('svg');
                 if (themeBtnIcon) themeBtnIcon.className = 'w-5 h-5 ' + theme.sidebarSubtextClass;
+            }
+            
+            // Update footer
+            const footer = document.querySelector('footer');
+            if (footer) {
+                footer.className = 'text-center py-12 mt-20 ' + theme.footerClass;
+                const footerText = footer.querySelector('p');
+                if (footerText) footerText.className = 'text-sm font-light tracking-wide ' + theme.footerTextClass;
             }
             
             localStorage.setItem('selectedTheme', themeId);
