@@ -52,6 +52,33 @@ def serve_images(filename):
         return send_from_directory('.', filename)
     return 'File not found', 404
 
+@app.route('/admin')
+def admin():
+    # serve the admin dashboard page
+    return send_from_directory('.', 'admin.html')
+
+@app.route('/api/users')
+def get_users():
+    # API endpoint to get all users as JSON
+    conn = get_db()
+    cursor = conn.execute('SELECT id, name, email FROM users ORDER BY id DESC')
+    users = [{'id': row[0], 'name': row[1], 'email': row[2]} for row in cursor.fetchall()]
+    conn.close()
+    return {'users': users, 'count': len(users)}
+
+@app.route('/api/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    # API endpoint to delete a user
+    conn = get_db()
+    try:
+        conn.execute('DELETE FROM users WHERE id = ?', (user_id,))
+        conn.commit()
+        conn.close()
+        return {'success': True, 'message': 'User deleted'}
+    except Exception as e:
+        conn.close()
+        return {'success': False, 'message': str(e)}, 400
+
 @app.route('/submit', methods=['POST'])
 def submit():
     data = request.json  # Handle JSON data from HTML
