@@ -1,19 +1,29 @@
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, jsonify
 import sqlite3
 from werkzeug.security import generate_password_hash
+from datetime import datetime
+import csv
+import io
 
 DB = 'users.db'
 app = Flask(__name__)
 
 def init_db():
     conn = sqlite3.connect(DB)
+    # Create users table with timestamp
     conn.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            email TEXT NOT NULL
+            email TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+    # Add created_at column to existing table if it doesn't exist
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP')
+    except sqlite3.OperationalError:
+        pass  # Column already exists
     conn.commit()
     conn.close()
 
@@ -59,10 +69,20 @@ def admin():
 
 @app.route('/api/users')
 def get_users():
-    # API endpoint to get all users as JSON
+    # API endpoint to get all users as JSON with sorting
+    sort_by = request.args.get('sort', 'id')
+    order = request.args.get('order', 'desc')
+    
+    allowed_columns = ['id', 'name', 'email', 'created_at']
+    if sort_by not in allowed_columns:
+        sort_by = 'id'
+    if order not in ['asc', 'desc']:
+        order = 'desc'
+    
     conn = get_db()
-    cursor = conn.execute('SELECT id, name, email FROM users ORDER BY id DESC')
-    users = [{'id': row[0], 'name': row[1], 'email': row[2]} for row in cursor.fetchall()]
+    query = f'SELECT id, name, email, created_at FROM users ORDER BY {sort_by} {order}'
+    cursor = conn.execute(query)
+    users = [{'id': row[0], 'name': row[1], 'email': row[2], 'created_at': row[3]} for row in cursor.fetchall()]
     conn.close()
     return {'users': users, 'count': len(users)}
 
@@ -78,6 +98,87 @@ def delete_user(user_id):
     except Exception as e:
         conn.close()
         return {'success': False, 'message': str(e)}, 400
+
+@app.route('/api/users/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    # API endpoint to update a user
+    data = request.json
+    name = data.get('name')
+    email = data.get('email')
+    
+    if not name or not email:
+        return {'success': False, 'message': 'Name and email required'}, 400
+    
+    conn = get_db()
+    try:
+        conn.execute('UPDATE users SET name = ?, email = ? WHERE id = ?', (name, email, user_id))
+        conn.commit()
+        conn.close()
+        return {'success': True, 'message': 'User updated'}
+    except Exception as e:
+        conn.close()
+        return {'success': False, 'message': str(e)}, 400
+
+@app.route('/api/users/bulk-delete', methods=['POST'])
+def bulk_delete_users():
+    # API endpoint to delete multiple users
+    data = request.json
+    user_ids = data.get('ids', [])
+    
+    if not user_ids:
+        return {'success': False, 'message': 'No user IDs provided'}, 400
+    
+    conn = get_db()
+    try:
+        placeholders = ','.join('?' * len(user_ids))
+        conn.execute(f'DELETE FROM users WHERE id IN ({placeholders})', user_ids)
+        conn.commit()
+        conn.close()
+        return {'success': True, 'message': f'{len(user_ids)} users deleted'}
+    except Exception as e:
+        conn.close()
+        return {'success': False, 'message': str(e)}, 400
+
+@app.route('/api/users/add', methods=['POST'])
+def add_user():
+    # API endpoint to manually add a user
+    data = request.json
+    name = data.get('name')
+    email = data.get('email')
+    
+    if not name or not email:
+        return {'success': False, 'message': 'Name and email required'}, 400
+    
+    conn = get_db()
+    try:
+        conn.execute('INSERT INTO users (name, email) VALUES (?, ?)', (name, email))
+        conn.commit()
+        conn.close()
+        return {'success': True, 'message': 'User added successfully'}
+    except Exception as e:
+        conn.close()
+        return {'success': False, 'message': str(e)}, 400
+
+@app.route('/api/users/export')
+def export_users():
+    # API endpoint to export users as CSV
+    conn = get_db()
+    cursor = conn.execute('SELECT id, name, email, created_at FROM users ORDER BY id DESC')
+    users = cursor.fetchall()
+    conn.close()
+    
+    # Create CSV in memory
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['ID', 'Name', 'Email', 'Created At'])
+    writer.writerows(users)
+    
+    # Return as downloadable file
+    return app.response_class(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': 'attachment; filename=users_export.csv'}
+    )
 
 @app.route('/submit', methods=['POST'])
 def submit():
